@@ -1223,7 +1223,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 appledaily.googlephoto.vip
 0.0.0.0 bot2.googlerenewals.net
 0.0.0.0 linux2.googlerenewals.net
-0.0.0.0 www.googletagmanager.com
+# 0.0.0.0 www.googletagmanager.com
 0.0.0.0 cdn.googletoolservices.com
 0.0.0.0 goooooooooogle.com
 0.0.0.0 www.goooooooooogle.com
@@ -1713,7 +1713,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 browser.pipe.aria.microsoft.com
 0.0.0.0 mobile.pipe.aria.microsoft.com
 0.0.0.0 v10c.events.data.microsoft.com
-0.0.0.0 web.vortex.data.microsoft.com
+# 0.0.0.0 web.vortex.data.microsoft.com
 0.0.0.0 sqm.telemetry.microsoft.com
 0.0.0.0 telecommand.telemetry.microsoft.com
 0.0.0.0 watson.telemetry.microsoft.com
@@ -3762,7 +3762,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 static.adfarm1.adition.com
 0.0.0.0 cd.adition.com
 0.0.0.0 dbt.adition.com
-0.0.0.0 imagesrv.adition.com
+# 0.0.0.0 imagesrv.adition.com
 0.0.0.0 track.adition.com
 0.0.0.0 vt.adition.com
 
@@ -9259,7 +9259,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 googleads2.g.doubleclick.net
 0.0.0.0 googleads4.g.doubleclick.net
 0.0.0.0 pubads.g.doubleclick.net
-0.0.0.0 securepubads.g.doubleclick.net
+# 0.0.0.0 securepubads.g.doubleclick.net
 0.0.0.0 stats.g.doubleclick.net
 0.0.0.0 survey.g.doubleclick.net
 0.0.0.0 g0.doubleclick.net
@@ -10554,7 +10554,7 @@ ff02::3 ip6-allhosts
 
 # [google-analytics.com]
 0.0.0.0 ssl.google-analytics.com
-0.0.0.0 www.google-analytics.com
+# 0.0.0.0 www.google-analytics.com
 
 # [google.com]
 0.0.0.0 ads.google.com
@@ -10618,7 +10618,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 video-ad-stats.googlesyndication.com
 
 # [googletagmanager.com]
-0.0.0.0 googletagmanager.com
+# 0.0.0.0 googletagmanager.com
 
 # [googletagservices.com]
 0.0.0.0 googletagservices.com
@@ -13808,7 +13808,7 @@ ff02::3 ip6-allhosts
 # [microsoft.com]
 0.0.0.0 bingads.microsoft.com
 0.0.0.0 advertise.bingads.microsoft.com
-0.0.0.0 vortex.data.microsoft.com
+# 0.0.0.0 vortex.data.microsoft.com
 
 # [midasplayer.com]
 0.0.0.0 midasplayer.com
@@ -15209,7 +15209,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 ad.northparkapp.com
 
 # [npttech.com]
-0.0.0.0 www.npttech.com
+# 0.0.0.0 www.npttech.com
 
 # [nr-assets.net]
 0.0.0.0 insights.nr-assets.net
@@ -43852,7 +43852,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 ad-ace.doubleclick.net
 0.0.0.0 fls.au.doubleclick.net
 0.0.0.0 www.doubleclickbygoogle.com
-0.0.0.0 google-analytics.com
+# 0.0.0.0 google-analytics.com
 0.0.0.0 www.linksalpha.com
 # [Gossamer][AS36483][172.255.48.0 - 172.255.63.255]
 # [Gossamer][AS36483][208.70.244.0 - 208.70.247.255]
@@ -45371,7 +45371,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 asqnext.nuggad.net
 0.0.0.0 bei.nuggad.net
 0.0.0.0 berldk.nuggad.net
-0.0.0.0 derstandard.nuggad.net
+# 0.0.0.0 derstandard.nuggad.net
 0.0.0.0 dbadk.nuggad.net
 0.0.0.0 gwp.nuggad.net
 0.0.0.0 ip.nuggad.net
@@ -66505,7 +66505,7 @@ ff02::3 ip6-allhosts
 0.0.0.0 nondescriptsmile.com
 0.0.0.0 nondescriptstocking.com
 0.0.0.0 novem.pl
-0.0.0.0 npttech.com
+# 0.0.0.0 npttech.com
 0.0.0.0 ns1p.net
 0.0.0.0 ntv.io
 0.0.0.0 ntvk1.ru
