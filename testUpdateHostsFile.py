@@ -17,6 +17,8 @@ import unittest
 import unittest.mock as mock
 from io import BytesIO, StringIO
 
+import requests
+
 import updateHostsFile
 from updateHostsFile import (
     Colors,
@@ -28,7 +30,7 @@ from updateHostsFile import (
     gather_custom_exclusions,
     get_defaults,
     get_file_by_url,
-    is_valid_domain_format,
+    is_valid_user_provided_domain_format,
     matches_exclusions,
     move_hosts_file_into_place,
     normalize_rule,
@@ -123,7 +125,7 @@ class TestGetDefaults(Base):
                 "readmedata": {},
                 "readmedatafilename": ("foo" + self.sep + "readmeData.json"),
                 "exclusionpattern": r"([a-zA-Z\d-]+\.){0,}",
-                "exclusionregexs": [],
+                "exclusionregexes": [],
                 "exclusions": [],
                 "commonexclusions": ["hulu.com"],
                 "blacklistfile": "foo" + self.sep + "blacklist",
@@ -476,9 +478,6 @@ class TestPromptForMove(Base):
         self.assert_called_once(mock_query)
         mock_move.assert_not_called()
 
-        mock_query.reset_mock()
-        mock_move.reset_mock()
-
     @mock.patch("updateHostsFile.move_hosts_file_into_place", return_value=0)
     @mock.patch("updateHostsFile.query_yes_no", return_value=True)
     def testPromptMove(self, mock_query, mock_move):
@@ -489,9 +488,6 @@ class TestPromptForMove(Base):
 
         self.assert_called_once(mock_query)
         self.assert_called_once(mock_move)
-
-        mock_query.reset_mock()
-        mock_move.reset_mock()
 
 
 # End Prompt the User
@@ -547,7 +543,9 @@ class TestGatherCustomExclusions(BaseStdout):
     # Can only test in the invalid domain case
     # because of the settings global variable.
     @mock.patch("updateHostsFile.input", side_effect=["foo", "no"])
-    @mock.patch("updateHostsFile.is_valid_domain_format", return_value=False)
+    @mock.patch(
+        "updateHostsFile.is_valid_user_provided_domain_format", return_value=False
+    )
     def test_basic(self, *_):
         gather_custom_exclusions("foo", [])
 
@@ -556,7 +554,9 @@ class TestGatherCustomExclusions(BaseStdout):
         self.assertIn(expected, output)
 
     @mock.patch("updateHostsFile.input", side_effect=["foo", "yes", "bar", "no"])
-    @mock.patch("updateHostsFile.is_valid_domain_format", return_value=False)
+    @mock.patch(
+        "updateHostsFile.is_valid_user_provided_domain_format", return_value=False
+    )
     def test_multiple(self, *_):
         gather_custom_exclusions("foo", [])
 
@@ -636,6 +636,31 @@ class TestMatchesExclusions(Base):
             "8.9.1.2 education.edu",
         ]:
             self.assertTrue(matches_exclusions(domain, exclusion_regexes))
+
+    def test_match_raw_list(self):
+        exclusion_regexes = [r".*\.com", r".*\.org", r".*\.edu", r".*@.*"]
+        exclusion_regexes = [re.compile(regex) for regex in exclusion_regexes]
+
+        for domain in [
+            "hulu.com",
+            "yahoo.com",
+            "adaway.org",
+            "education.edu",
+            "a.stro.lo.gy@45.144.225.135",
+        ]:
+            self.assertTrue(matches_exclusions(domain, exclusion_regexes))
+
+    def test_no_match_raw_list(self):
+        exclusion_regexes = [r".*\.org", r".*\.edu"]
+        exclusion_regexes = [re.compile(regex) for regex in exclusion_regexes]
+
+        for domain in [
+            "localhost",
+            "hulu.com",
+            "yahoo.com",
+            "cloudfront.net",
+        ]:
+            self.assertFalse(matches_exclusions(domain, exclusion_regexes))
 
 
 # End Exclusion Logic
@@ -810,13 +835,11 @@ class TestNormalizeRule(BaseStdout):
     def test_no_match(self):
         kwargs = dict(target_ip="0.0.0.0", keep_domain_comments=False)
 
+        # Note: "Bare"- Domains are accepted. IP are excluded.
         for rule in [
-            "foo",
             "128.0.0.1",
-            "bar.com/usa",
             "0.0.0 google",
             "0.1.2.3.4 foo/bar",
-            "twitter.com",
         ]:
             self.assertEqual(normalize_rule(rule, **kwargs), (None, None))
 
@@ -878,13 +901,43 @@ class TestNormalizeRule(BaseStdout):
 
             sys.stdout = StringIO()
 
+    def test_no_comment_raw(self):
+        for rule in ("twitter.com", "google.com", "foo.bar.edu"):
+            expected = (rule, "0.0.0.0 " + rule + "\n")
 
-class TestStripRule(Base):
-    def test_strip_empty(self):
-        for line in ["0.0.0.0", "domain.com", "foo"]:
-            output = strip_rule(line)
+            actual = normalize_rule(
+                rule, target_ip="0.0.0.0", keep_domain_comments=False
+            )
+            self.assertEqual(actual, expected)
+
+            # Nothing gets printed if there's a match.
+            output = sys.stdout.getvalue()
             self.assertEqual(output, "")
 
+            sys.stdout = StringIO()
+
+    def test_with_comments_raw(self):
+        for target_ip in ("0.0.0.0", "127.0.0.1", "8.8.8.8"):
+            for comment in ("foo", "bar", "baz"):
+                rule = "1.google.co.uk " + comment
+                expected = (
+                    "1.google.co.uk",
+                    (str(target_ip) + " 1.google.co.uk # " + comment + "\n"),
+                )
+
+                actual = normalize_rule(
+                    rule, target_ip=target_ip, keep_domain_comments=True
+                )
+                self.assertEqual(actual, expected)
+
+                # Nothing gets printed if there's a match.
+                output = sys.stdout.getvalue()
+                self.assertEqual(output, "")
+
+                sys.stdout = StringIO()
+
+
+class TestStripRule(Base):
     def test_strip_exactly_two(self):
         for line in [
             "0.0.0.0 twitter.com",
@@ -903,6 +956,28 @@ class TestStripRule(Base):
             "127.0.0.1 facebook.com",
             "8.8.8.8 google.com",
             "1.2.3.4 foo.bar.edu",
+        ]:
+            output = strip_rule(line + comment)
+            self.assertEqual(output, line + comment)
+
+    def test_strip_raw(self):
+        for line in [
+            "twitter.com",
+            "facebook.com",
+            "google.com",
+            "foo.bar.edu",
+        ]:
+            output = strip_rule(line)
+            self.assertEqual(output, line)
+
+    def test_strip_raw_with_comment(self):
+        comment = " # comments here galore"
+
+        for line in [
+            "twitter.com",
+            "facebook.com",
+            "google.com",
+            "foo.bar.edu",
         ]:
             output = strip_rule(line + comment)
             self.assertEqual(output, line + comment)
@@ -1412,77 +1487,6 @@ class TestRemoveOldHostsFile(BaseMockDir):
 # End File Logic
 
 
-# Helper Functions
-def mock_url_open(url):
-    """
-    Mock of `urlopen` that returns the url in a `BytesIO` stream.
-
-    Parameters
-    ----------
-    url : str
-        The URL associated with the file to open.
-
-    Returns
-    -------
-    bytes_stream : BytesIO
-        The `url` input wrapped in a `BytesIO` stream.
-    """
-
-    return BytesIO(url)
-
-
-def mock_url_open_fail(_):
-    """
-    Mock of `urlopen` that fails with an Exception.
-    """
-
-    raise Exception()
-
-
-def mock_url_open_read_fail(_):
-    """
-    Mock of `urlopen` that returns an object that fails on `read`.
-
-    Returns
-    -------
-    file_mock : mock.Mock
-        A mock of a file object that fails when reading.
-    """
-
-    def fail_read():
-        raise Exception()
-
-    m = mock.Mock()
-
-    m.read = fail_read
-    return m
-
-
-def mock_url_open_decode_fail(_):
-    """
-    Mock of `urlopen` that returns an object that fails on during decoding
-    the output of `urlopen`.
-
-    Returns
-    -------
-    file_mock : mock.Mock
-        A mock of a file object that fails when decoding the output.
-    """
-
-    def fail_decode(_):
-        raise Exception()
-
-    def read():
-        s = mock.Mock()
-        s.decode = fail_decode
-
-        return s
-
-    m = mock.Mock()
-    m.read = read
-    return m
-
-
 class DomainToIDNA(Base):
     def __init__(self, *args, **kwargs):
         super(DomainToIDNA, self).__init__(*args, **kwargs)
@@ -1587,7 +1591,7 @@ class DomainToIDNA(Base):
 
             self.assertEqual(actual, expected)
 
-        # Test with multiple space as seprator of domain and space and
+        # Test with multiple space as separator of domain and space and
         # tabulation as separator or comments.
         for i in range(len(self.domains)):
             data = (b"0.0.0.0     " + self.domains[i] + b" \t # Hello World").decode(
@@ -1599,7 +1603,7 @@ class DomainToIDNA(Base):
 
             self.assertEqual(actual, expected)
 
-        # Test with multiple tabulations as seprator of domain and space and
+        # Test with multiple tabulations as separator of domain and space and
         # tabulation as separator or comments.
         for i in range(len(self.domains)):
             data = (b"0.0.0.0\t\t\t" + self.domains[i] + b" \t # Hello World").decode(
@@ -1622,44 +1626,55 @@ class DomainToIDNA(Base):
 
 
 class GetFileByUrl(BaseStdout):
-    @mock.patch("updateHostsFile.urlopen", side_effect=mock_url_open)
-    def test_read_url(self, _):
-        url = b"www.google.com"
+    def test_basic(self):
+        raw_resp_content = "hello, ".encode("ascii") + "world".encode("utf-8")
+        resp_obj = requests.Response()
+        resp_obj.__setstate__({"_content": raw_resp_content})
 
-        expected = "www.google.com"
-        actual = get_file_by_url(url, delay=0)
+        expected = "hello, world"
 
-        self.assertEqual(actual, expected)
+        with mock.patch("requests.get", return_value=resp_obj):
+            actual = get_file_by_url("www.test-url.com")
 
-    @mock.patch("updateHostsFile.urlopen", side_effect=mock_url_open_fail)
-    def test_read_url_fail(self, _):
-        url = b"www.google.com"
-        self.assertIsNone(get_file_by_url(url, delay=0))
+        self.assertEqual(expected, actual)
 
-        expected = "Problem getting file:"
-        output = sys.stdout.getvalue()
+    def test_with_idna(self):
+        raw_resp_content = b"www.huala\xc3\xb1e.cl"
+        resp_obj = requests.Response()
+        resp_obj.__setstate__({"_content": raw_resp_content})
 
-        self.assertIn(expected, output)
+        expected = "www.xn--hualae-0wa.cl"
 
-    @mock.patch("updateHostsFile.urlopen", side_effect=mock_url_open_read_fail)
-    def test_read_url_read_fail(self, _):
-        url = b"www.google.com"
-        self.assertIsNone(get_file_by_url(url, delay=0))
+        with mock.patch("requests.get", return_value=resp_obj):
+            actual = get_file_by_url("www.test-url.com")
 
-        expected = "Problem getting file:"
-        output = sys.stdout.getvalue()
+        self.assertEqual(expected, actual)
 
-        self.assertIn(expected, output)
+    def test_connect_unknown_domain(self):
+        test_url = (
+            "http://doesnotexist.google.com"  # leads to exception: ConnectionError
+        )
+        with mock.patch(
+            "requests.get", side_effect=requests.exceptions.ConnectionError
+        ):
+            return_value = get_file_by_url(test_url)
+        self.assertIsNone(return_value)
+        printed_output = sys.stdout.getvalue()
+        self.assertEqual(
+            printed_output, "Error retrieving data from {}\n".format(test_url)
+        )
 
-    @mock.patch("updateHostsFile.urlopen", side_effect=mock_url_open_decode_fail)
-    def test_read_url_decode_fail(self, _):
-        url = b"www.google.com"
-        self.assertIsNone(get_file_by_url(url, delay=0))
-
-        expected = "Problem getting file:"
-        output = sys.stdout.getvalue()
-
-        self.assertIn(expected, output)
+    def test_invalid_url(self):
+        test_url = "http://fe80::5054:ff:fe5a:fc0"  # leads to exception: InvalidURL
+        with mock.patch(
+            "requests.get", side_effect=requests.exceptions.ConnectionError
+        ):
+            return_value = get_file_by_url(test_url)
+        self.assertIsNone(return_value)
+        printed_output = sys.stdout.getvalue()
+        self.assertEqual(
+            printed_output, "Error retrieving data from {}\n".format(test_url)
+        )
 
 
 class TestWriteData(Base):
@@ -1743,9 +1758,9 @@ class TestQueryYesOrNo(BaseStdout):
         self.assertIn(expected, output)
 
 
-class TestIsValidDomainFormat(BaseStdout):
+class TestIsValidUserProvidedDomainFormat(BaseStdout):
     def test_empty_domain(self):
-        self.assertFalse(is_valid_domain_format(""))
+        self.assertFalse(is_valid_user_provided_domain_format(""))
 
         output = sys.stdout.getvalue()
         expected = "You didn't enter a domain. Try again."
@@ -1760,7 +1775,7 @@ class TestIsValidDomainFormat(BaseStdout):
             "https://github.com",
             "http://www.google.com",
         ]:
-            self.assertFalse(is_valid_domain_format(invalid_domain))
+            self.assertFalse(is_valid_user_provided_domain_format(invalid_domain))
 
             output = sys.stdout.getvalue()
             sys.stdout = StringIO()
@@ -1769,7 +1784,7 @@ class TestIsValidDomainFormat(BaseStdout):
 
     def test_valid_domain(self):
         for valid_domain in ["github.com", "travis.org", "twitter.com"]:
-            self.assertTrue(is_valid_domain_format(valid_domain))
+            self.assertTrue(is_valid_user_provided_domain_format(valid_domain))
 
             output = sys.stdout.getvalue()
             sys.stdout = StringIO()
