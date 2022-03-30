@@ -1030,6 +1030,13 @@
 127.0.0.1 rebootv5.adsunflower.com
 
 # [adswizz.com]
+127.0.0.1 cdn.adswizz.com
+127.0.0.1 deliveryengine.cox.adswizz.com
+127.0.0.1 delivery-cdn-cf.adswizz.com
+127.0.0.1 cox.deliveryengine.adswizz.com
+127.0.0.1 streamguys.deliveryengine.adswizz.com
+127.0.0.1 synchroscript.deliveryengine.adswizz.com
+127.0.0.1 synchrobox.adswizz.com
 127.0.0.1 zc.adswizz.com
 
 # [adsymptotic.com]
@@ -1332,9 +1339,6 @@
 # [adztec.com]
 127.0.0.1 adztec.com
 
-# [aep-email.com]
-127.0.0.1 click.aep-email.com
-
 # [aerserv.com]
 127.0.0.1 aerserv.com
 127.0.0.1 ads.aerserv.com
@@ -1512,6 +1516,10 @@
 # [akisinn.site]
 127.0.0.1 int.akisinn.site
 
+# [akstat.io]
+127.0.0.1 17de4c16.akstat.io
+127.0.0.1 17de4c17.akstat.io
+
 # [alcmpn.com]
 127.0.0.1 p.alcmpn.com
 
@@ -1584,6 +1592,7 @@
 
 # [amazon.com]
 127.0.0.1 aan.amazon.com
+127.0.0.1 fls-na.amazon.com
 
 # [ads-api-new-2052271615.ap-northeast-1.elb.amazonaws.com]
 127.0.0.1 ads-api-new-2052271615.ap-northeast-1.elb.amazonaws.com
@@ -1797,6 +1806,9 @@
 127.0.0.1 cloud-emea.analytics-egain.com
 127.0.0.1 cloud-us.analytics-egain.com
 
+# [analyticssystems.net]
+127.0.0.1 analyticssystems.net
+
 # [andomedia.com]
 127.0.0.1 andomedia.com
 
@@ -1861,9 +1873,6 @@
 # [app-adforce.jp]
 127.0.0.1 app-adforce.jp
 127.0.0.1 analytics.app-adforce.jp
-
-# [app-measurement.com]
-127.0.0.1 app-measurement.com
 
 # [appadhoc.com]
 127.0.0.1 cdn-api.appadhoc.com
@@ -2260,9 +2269,6 @@
 127.0.0.1 eu.y.atwola.com
 127.0.0.1 us.y.atwola.com
 
-# [audioeye.com]
-127.0.0.1 ws.audioeye.com
-
 # [auditude.com]
 127.0.0.1 ad.auditude.com
 
@@ -2486,10 +2492,6 @@
 # [bksn.se]
 127.0.0.1 us.bksn.se
 
-# [blinkreceipt.com]
-127.0.0.1 licensing.blinkreceipt.com
-127.0.0.1 sdk-resources.blinkreceipt.com
-
 # [blismedia.com]
 127.0.0.1 tr.blismedia.com
 
@@ -2711,10 +2713,6 @@
 127.0.0.1 events.browsiprod.com
 127.0.0.1 yield-manager.browsiprod.com
 
-# [bskarn.com]
-127.0.0.1 cdn.bskarn.com
-127.0.0.1 loc.bskarn.com
-
 # [btloader.com]
 127.0.0.1 btloader.com
 
@@ -2852,9 +2850,6 @@
 # [cbsi.com]
 127.0.0.1 production-cmp.isgprivacy.cbsi.com
 
-# [cbsivideo.com]
-127.0.0.1 doppler-reporting.cbsivideo.com
-
 # [cbsnews.com]
 127.0.0.1 tealium.cbsnews.com
 
@@ -2933,6 +2928,7 @@
 127.0.0.1 ssp-events.chartboost.com
 127.0.0.1 t.chartboost.com
 127.0.0.1 t2.chartboost.com
+127.0.0.1 v-ak.chartboost.com
 127.0.0.1 v2.chartboost.com
 127.0.0.1 www.chartboost.com
 
@@ -3149,9 +3145,6 @@
 127.0.0.1 api.company-target.com
 127.0.0.1 segments.company-target.com
 
-# [complex.com]
-127.0.0.1 media.complex.com
-
 # [comscore.com]
 127.0.0.1 siterecruit.comscore.com
 
@@ -3253,6 +3246,7 @@
 # [conviva.com]
 127.0.0.1 conviva.com
 127.0.0.1 47e224be59415ec068b94bca857581bd7dde7fb6.cws.conviva.com
+127.0.0.1 87a6b28bc7823e67a5bb2a0a6728c702afcae78d.cws.conviva.com
 127.0.0.1 efcad85fded269f462c434c4c5f84654a17d4a77.cws.conviva.com
 127.0.0.1 cws-eu.conviva.com
 127.0.0.1 cws-hulu.conviva.com
@@ -3272,9 +3266,6 @@
 # [cootlogix.com]
 127.0.0.1 openrtb.cootlogix.com
 127.0.0.1 prebid.cootlogix.com
-
-# [coralogix.com]
-127.0.0.1 api.coralogix.com
 
 # [cordial.com]
 127.0.0.1 events-stream-svc.usw2.cordial.com
@@ -3311,15 +3302,6 @@
 # [crasheye.cn]
 127.0.0.1 crasheye.cn
 127.0.0.1 rp.crasheye.cn
-
-# [crashlytics.com]
-127.0.0.1 crashlytics.com
-127.0.0.1 api.crashlytics.com
-127.0.0.1 e.crashlytics.com
-127.0.0.1 firebase-settings.crashlytics.com
-127.0.0.1 reports.crashlytics.com
-127.0.0.1 settings.crashlytics.com
-127.0.0.1 update.crashlytics.com
 
 # [crazyegg.com]
 127.0.0.1 sample-api-v2.crazyegg.com
@@ -3915,6 +3897,10 @@
 127.0.0.1 fm.duokanbox.com
 127.0.0.1 stat.duokanbox.com
 
+# [durationmedia.net]
+127.0.0.1 be.durationmedia.net
+127.0.0.1 tag.durationmedia.net
+
 # [dxsvr.com]
 127.0.0.1 ak.dxsvr.com
 127.0.0.1 rc.dxsvr.com
@@ -4086,8 +4072,6 @@
 127.0.0.1 owneriq.net.edgekey.net
 127.0.0.1 wildcard.owneriq.net.edgekey.net
 127.0.0.1 yieldlab.net.edgekey.net
-127.0.0.1 typekit.net-v3.edgekey.net
-127.0.0.1 p.typekit.net-v3.edgekey.net
 127.0.0.1 pubmatic.edgekey.net
 127.0.0.1 aktrack.pubmatic.edgekey.net
 127.0.0.1 secure-adnxs.edgekey.net
@@ -4381,9 +4365,6 @@
 127.0.0.1 ads.fingersoft.net
 127.0.0.1 ads3.fingersoft.net
 
-# [firebaseio.com]
-127.0.0.1 famobi-01.firebaseio.com
-
 # [firstimpression.io]
 127.0.0.1 firstimpression.io
 127.0.0.1 cdn.firstimpression.io
@@ -4547,6 +4528,7 @@
 127.0.0.1 g13v.prd.ads.aws.fwmrm.net
 127.0.0.1 nbcu.prd.ads.aws.fwmrm.net
 127.0.0.1 v.fwmrm.net
+127.0.0.1 7f077.v.fwmrm.net
 
 # [fyber.com]
 127.0.0.1 api.fyber.com
@@ -4719,6 +4701,7 @@
 127.0.0.1 adn-j.sp.gmossp-sp.jp
 
 # [go-mpulse.net]
+127.0.0.1 c.go-mpulse.net
 127.0.0.1 s.go-mpulse.net
 
 # [go.com]
@@ -4785,9 +4768,6 @@
 
 # [googleadsserving.cn]
 127.0.0.1 static.googleadsserving.cn
-
-# [crashlyticsreports-pa.googleapis.com]
-127.0.0.1 crashlyticsreports-pa.googleapis.com
 
 # [googlesyndication.com]
 127.0.0.1 googlesyndication.com
@@ -5274,6 +5254,10 @@
 # [infra.systems]
 127.0.0.1 studcat.infra.systems
 
+# [inhousedsp.com]
+127.0.0.1 inhousedsp.com
+127.0.0.1 content.inhousedsp.com
+
 # [inlcorp.com]
 127.0.0.1 adapi.inlcorp.com
 
@@ -5308,6 +5292,7 @@
 127.0.0.1 de.inmobi.com
 127.0.0.1 b.de.inmobi.com
 127.0.0.1 e.de.inmobi.com
+127.0.0.1 ic.de.inmobi.com
 127.0.0.1 glance.inmobi.com
 127.0.0.1 analytics.glance.inmobi.com
 127.0.0.1 id.analytics.glance.inmobi.com
@@ -5318,6 +5303,8 @@
 127.0.0.1 glance-internal.inmobi.com
 127.0.0.1 analytics-prod2.glance-internal.inmobi.com
 127.0.0.1 content-prod3.glance-internal.inmobi.com
+127.0.0.1 s.iff.inmobi.com
+127.0.0.1 dspbeacons.error.ihasdsp.inmobi.com
 127.0.0.1 imces.inmobi.com
 127.0.0.1 pulse.inmobi.com
 127.0.0.1 carpet.pulse.inmobi.com
@@ -5349,11 +5336,8 @@
 127.0.0.1 l.inmobicdn.net
 127.0.0.1 glance.l.inmobicdn.net
 127.0.0.1 i.l.inmobicdn.net
-
-# [inmoment.com]
-127.0.0.1 dispawsusva.inmoment.com
-127.0.0.1 intercept.inmoment.com
-127.0.0.1 intercept-client.inmoment.com
+127.0.0.1 i.l-dsp.inmobicdn.net
+127.0.0.1 supply.inmobicdn.net
 
 # [inner-active.mobi]
 127.0.0.1 inner-active.mobi
@@ -5621,6 +5605,8 @@
 127.0.0.1 jampp.com
 127.0.0.1 cdn.jampp.com
 127.0.0.1 imgx.jampp.com
+127.0.0.1 imp-lb-us2.jampp.com
+127.0.0.1 static.jampp.com
 
 # [jdoqocy.com]
 127.0.0.1 jdoqocy.com
@@ -6159,6 +6145,7 @@
 # [locuslabs.com]
 127.0.0.1 api.locuslabs.com
 127.0.0.1 assets.locuslabs.com
+127.0.0.1 rest.locuslabs.com
 
 # [loft.com]
 127.0.0.1 smetrics.loft.com
@@ -6248,9 +6235,6 @@
 # [madkudu.com]
 127.0.0.1 api.madkudu.com
 127.0.0.1 cdn.madkudu.com
-
-# [magixite.com]
-127.0.0.1 acc.magixite.com
 
 # [magmamobile.com]
 127.0.0.1 api.magmamobile.com
@@ -7168,9 +7152,6 @@
 # [morgdm.ru]
 127.0.0.1 morgdm.ru
 
-# [motus.com]
-127.0.0.1 mobileapi.motus.com
-
 # [moz.com]
 127.0.0.1 analytics.moz.com
 127.0.0.1 mozbar.moz.com
@@ -7197,6 +7178,9 @@
 # [mradx.net]
 127.0.0.1 r.mradx.net
 127.0.0.1 r0.mradx.net
+
+# [mrtnsvr.com]
+127.0.0.1 ad.mrtnsvr.com
 
 # [msads.net]
 127.0.0.1 msads.net
@@ -7408,6 +7392,7 @@
 127.0.0.1 nextclick.pl
 
 # [nextdoor.com]
+127.0.0.1 uk-tracking.nextdoor.com
 127.0.0.1 us-tracking.nextdoor.com
 
 # [nicovideo.jp]
@@ -7523,6 +7508,7 @@
 # [omtrdc.net]
 127.0.0.1 omtrdc.net
 127.0.0.1 hb.omtrdc.net
+127.0.0.1 cbsinteractive.hb.omtrdc.net
 127.0.0.1 espn.hb.omtrdc.net
 127.0.0.1 foxnews.hb.omtrdc.net
 127.0.0.1 hulu.hb.omtrdc.net
@@ -7532,6 +7518,7 @@
 127.0.0.1 audible.sc.omtrdc.net
 127.0.0.1 bamtech.sc.omtrdc.net
 127.0.0.1 carfax.sc.omtrdc.net
+127.0.0.1 coxcommunications.sc.omtrdc.net
 127.0.0.1 fox.com.ssl.d2.sc.omtrdc.net
 127.0.0.1 philipslighting.d3.sc.omtrdc.net
 127.0.0.1 kroger.sc.omtrdc.net
@@ -7562,9 +7549,6 @@
 # [oneaudience.com]
 127.0.0.1 api.oneaudience.com
 
-# [onecms.io]
-127.0.0.1 static.onecms.io
-
 # [onecount.net]
 127.0.0.1 validate.onecount.net
 
@@ -7586,10 +7570,6 @@
 
 # [oneplus.com]
 127.0.0.1 click.oneplus.com
-
-# [onesignal.com]
-127.0.0.1 api.onesignal.com
-127.0.0.1 cdn.onesignal.com
 
 # [onetag-sys.com]
 127.0.0.1 onetag-sys.com
@@ -7834,7 +7814,6 @@
 # [paypal.com]
 127.0.0.1 b.stats.paypal.com
 127.0.0.1 slc.stats.paypal.com
-127.0.0.1 t.paypal.com
 
 # [pcgamer.com]
 127.0.0.1 hawk.pcgamer.com
@@ -7975,9 +7954,6 @@
 # [placelocal.com]
 127.0.0.1 ak-cdn.placelocal.com
 127.0.0.1 tag.placelocal.com
-
-# [playhaven.com]
-127.0.0.1 playhaven.com
 
 # [playrix.com]
 127.0.0.1 stats.playrix.com
@@ -8124,9 +8100,6 @@
 
 # [proba.ai]
 127.0.0.1 api.proba.ai
-
-# [productmadness.com]
-127.0.0.1 att.productmadness.com
 
 # [programattik.com]
 127.0.0.1 ads.programattik.com
@@ -8414,6 +8387,9 @@
 127.0.0.1 sg01.rayjump.com
 127.0.0.1 tknet.rayjump.com
 127.0.0.1 us01.rayjump.com
+127.0.0.1 vg-aws-us-east-1a-hb.rayjump.com
+127.0.0.1 vg-aws-us-east-1b-hb.rayjump.com
+127.0.0.1 vg-new-hb.rayjump.com
 127.0.0.1 vg-setting.rayjump.com
 
 # [rbl.ms]
@@ -8424,6 +8400,9 @@
 
 # [realclever.com]
 127.0.0.1 realclever.com
+
+# [realvu.net]
+127.0.0.1 ac.realvu.net
 
 # [rebel.ai]
 127.0.0.1 cdn.rebel.ai
@@ -8477,6 +8456,9 @@
 # [reson8.com]
 127.0.0.1 ds.reson8.com
 127.0.0.1 idsync.reson8.com
+
+# [resonate.com]
+127.0.0.1 cdn.resonate.com
 
 # [responsys.net]
 127.0.0.1 static.cdn.responsys.net
@@ -8770,6 +8752,7 @@
 
 # [sascdn.com]
 127.0.0.1 ak-ns.sascdn.com
+127.0.0.1 mobileconfig.sascdn.com
 
 # [saygames.io]
 127.0.0.1 track.saygames.io
@@ -8786,9 +8769,6 @@
 
 # [sc-static.net]
 127.0.0.1 sc-static.net
-
-# [scanalert.com]
-127.0.0.1 images.scanalert.com
 
 # [scarabresearch.com]
 127.0.0.1 recommender.scarabresearch.com
@@ -8894,21 +8874,6 @@
 
 # [sentiance.com]
 127.0.0.1 api.sentiance.com
-
-# [sentry.io]
-127.0.0.1 sentry.io
-127.0.0.1 ingest.sentry.io
-127.0.0.1 o107031.ingest.sentry.io
-127.0.0.1 o129937.ingest.sentry.io
-127.0.0.1 o325556.ingest.sentry.io
-127.0.0.1 o334541.ingest.sentry.io
-127.0.0.1 o400018.ingest.sentry.io
-127.0.0.1 o472445.ingest.sentry.io
-127.0.0.1 o491168.ingest.sentry.io
-127.0.0.1 o502263.ingest.sentry.io
-127.0.0.1 o534899.ingest.sentry.io
-127.0.0.1 o77029.ingest.sentry.io
-127.0.0.1 disney.my.sentry.io
 
 # [servebom.com]
 127.0.0.1 servebom.com
@@ -9017,9 +8982,6 @@
 
 # [simplesharebuttons.com]
 127.0.0.1 simplesharebuttons.com
-
-# [simpletexting.com]
-127.0.0.1 simpletexting.com
 
 # [simpli.fi]
 127.0.0.1 ads.simpli.fi
@@ -9600,6 +9562,7 @@
 127.0.0.1 30572.api.swrve.com
 127.0.0.1 30736.api.swrve.com
 127.0.0.1 30819.api.swrve.com
+127.0.0.1 31123.api.swrve.com
 127.0.0.1 3193.api.swrve.com
 127.0.0.1 3285.api.swrve.com
 127.0.0.1 3426.api.swrve.com
@@ -9638,6 +9601,7 @@
 127.0.0.1 30572.content.swrve.com
 127.0.0.1 30736.content.swrve.com
 127.0.0.1 30819.content.swrve.com
+127.0.0.1 31123.content.swrve.com
 127.0.0.1 3285.content.swrve.com
 127.0.0.1 3616.content.swrve.com
 127.0.0.1 3696.content.swrve.com
@@ -9662,6 +9626,7 @@
 127.0.0.1 eu-content.swrve.com
 127.0.0.1 6379.eu-content.swrve.com
 127.0.0.1 6384.eu-content.swrve.com
+127.0.0.1 31123.identity.swrve.com
 127.0.0.1 link.swrve.com
 
 # [synergy-e.com]
@@ -9928,9 +9893,6 @@
 # [techcrunch.com]
 127.0.0.1 ampmetrics.techcrunch.com
 
-# [techlab-cdn.com]
-127.0.0.1 p11.techlab-cdn.com
-
 # [technoratimedia.com]
 127.0.0.1 ad-cdn.technoratimedia.com
 127.0.0.1 prebid.technoratimedia.com
@@ -9943,9 +9905,6 @@
 
 # [teenvogue.com]
 127.0.0.1 sstats.teenvogue.com
-
-# [telematicsct.com]
-127.0.0.1 oneapi.telematicsct.com
 
 # [telematicsdirect.com]
 127.0.0.1 nav.telematicsdirect.com
@@ -10042,10 +10001,6 @@
 # [tiqcdn.com]
 127.0.0.1 tags.tiqcdn.com
 127.0.0.1 tags-eu.tiqcdn.com
-
-# [tllms.com]
-127.0.0.1 api.tllms.com
-127.0.0.1 marketing.tllms.com
 
 # [tnkfactory.com]
 127.0.0.1 tnkfactory.com
@@ -10334,9 +10289,6 @@
 
 # [tynt.com]
 127.0.0.1 de.tynt.com
-
-# [typekit.net]
-127.0.0.1 p.typekit.net
 
 # [ua.com]
 127.0.0.1 lightstep-collector.api.ua.com
@@ -10661,10 +10613,6 @@
 # [vervemobile.com]
 127.0.0.1 vervemobile.com
 
-# [vhx.tv]
-127.0.0.1 api.vhx.tv
-127.0.0.1 collector.vhx.tv
-
 # [vi-serve.com]
 127.0.0.1 vi-serve.com
 127.0.0.1 nv.vi-serve.com
@@ -10749,9 +10697,6 @@
 127.0.0.1 sync.sync.viewdeos.com
 127.0.0.1 tags.viewdeos.com
 127.0.0.1 track.viewdeos.com
-
-# [viewpoint.com]
-127.0.0.1 viewpoint.com
 
 # [viglink.com]
 127.0.0.1 api.viglink.com
@@ -10952,9 +10897,6 @@
 127.0.0.1 cfr.us.v2.we-stats.com
 127.0.0.1 log-dbff2e04.us.v2.we-stats.com
 
-# [weather-and-climate.com]
-127.0.0.1 compare-static.weather-and-climate.com
-
 # [weather.com]
 127.0.0.1 airlytics.airlock.twcmobile.weather.com
 
@@ -11051,6 +10993,11 @@
 127.0.0.1 eligibility.wootric.com
 127.0.0.1 production.wootric.com
 127.0.0.1 survey.wootric.com
+
+# [worldnow.com]
+127.0.0.1 content.worldnow.com
+127.0.0.1 ftpcontent.worldnow.com
+127.0.0.1 kake.images.worldnow.com
 
 # [wowanalytics.co.uk]
 127.0.0.1 wowanalytics.co.uk
