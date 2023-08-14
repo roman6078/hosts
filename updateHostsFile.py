@@ -12,6 +12,7 @@ import json
 import locale
 import os
 import platform
+from pathlib import Path
 import re
 import shutil
 import socket
@@ -41,6 +42,8 @@ except ImportError:
 # Syntactic sugar for "sudo" command in UNIX / Linux
 if platform.system() == "OpenBSD":
     SUDO = ["/usr/bin/doas"]
+elif platform.system() == "Windows":
+    SUDO = ["powershell", "Start-Process", "powershell", "-Verb", "runAs"]
 else:
     SUDO = ["/usr/bin/env", "sudo"]
 
@@ -69,6 +72,7 @@ def get_defaults():
         "keepdomaincomments": True,
         "extensionspath": path_join_robust(BASEDIR_PATH, "extensions"),
         "extensions": [],
+        "nounifiedhosts": False,
         "compress": False,
         "minimise": False,
         "outputsubfolder": "",
@@ -120,6 +124,13 @@ def main():
         default=[],
         nargs="*",
         help="Host extensions to include in the final hosts file.",
+    )
+    parser.add_argument(
+        "--nounifiedhosts",
+        dest="nounifiedhosts",
+        default=False,
+        action="store_true",
+        help="Do not include the unified hosts file in the final hosts file. Usually used together with `--extensions`.",
     )
     parser.add_argument(
         "--ip",
@@ -245,6 +256,7 @@ def main():
     auto = settings["auto"]
     exclusion_regexes = settings["exclusionregexes"]
     source_data_filename = settings["sourcedatafilename"]
+    no_unified_hosts = settings["nounifiedhosts"]
 
     update_sources = prompt_for_update(freshen=settings["freshen"], update_auto=auto)
     if update_sources:
@@ -268,12 +280,13 @@ def main():
         extensions=extensions,
         extensionspath=extensions_path,
         sourcedatafilename=source_data_filename,
+        nounifiedhosts=no_unified_hosts,
     )
 
-    merge_file = create_initial_file()
-    remove_old_hosts_file(
-        path_join_robust(settings["outputpath"], "hosts"), settings["backup"]
+    merge_file = create_initial_file(
+        nounifiedhosts=no_unified_hosts,
     )
+    remove_old_hosts_file(settings["outputpath"], "hosts", settings["backup"])
     if settings["compress"]:
         final_file = open(path_join_robust(settings["outputpath"], "hosts"), "w+b")
         compressed_file = tempfile.NamedTemporaryFile()
@@ -297,6 +310,7 @@ def main():
         numberofrules=number_of_rules,
         outputsubfolder=output_subfolder,
         skipstatichosts=skip_static_hosts,
+        nounifiedhosts=no_unified_hosts,
     )
     final_file.close()
 
@@ -307,6 +321,7 @@ def main():
             numberofrules=number_of_rules,
             outputsubfolder=output_subfolder,
             sourcesdata=sources_data,
+            nounifiedhosts=no_unified_hosts,
         )
 
     print_success(
@@ -467,7 +482,7 @@ def prompt_for_move(final_file, **move_params):
         move_file = query_yes_no(prompt)
 
     if move_file:
-        move_hosts_file_into_place(final_file)
+        move_file = move_hosts_file_into_place(final_file)
 
     return move_file
 
@@ -665,6 +680,7 @@ def update_sources_data(sources_data, **sources_params):
         2) extensions
         3) extensionspath
         4) sourcedatafilename
+        5) nounifiedhosts
 
     Returns
     -------
@@ -674,13 +690,16 @@ def update_sources_data(sources_data, **sources_params):
 
     source_data_filename = sources_params["sourcedatafilename"]
 
-    for source in sort_sources(
-        recursive_glob(sources_params["datapath"], source_data_filename)
-    ):
-        update_file = open(source, "r", encoding="UTF-8")
-        update_data = json.load(update_file)
-        sources_data.append(update_data)
-        update_file.close()
+    if not sources_params["nounifiedhosts"]:
+        for source in sort_sources(
+            recursive_glob(sources_params["datapath"], source_data_filename)
+        ):
+            update_file = open(source, "r", encoding="UTF-8")
+            try:
+                update_data = json.load(update_file)
+                sources_data.append(update_data)
+            finally:
+                update_file.close()
 
     for source in sources_params["extensions"]:
         source_dir = path_join_robust(sources_params["extensionspath"], source)
@@ -688,10 +707,11 @@ def update_sources_data(sources_data, **sources_params):
             recursive_glob(source_dir, source_data_filename)
         ):
             update_file = open(update_file_path, "r")
-            update_data = json.load(update_file)
-
-            sources_data.append(update_data)
-            update_file.close()
+            try:
+                update_data = json.load(update_file)
+                sources_data.append(update_data)
+            finally:
+                update_file.close()
 
     return sources_data
 
@@ -738,6 +758,12 @@ def update_all_sources(source_data_filename, host_filename):
         update_file = open(source, "r", encoding="UTF-8")
         update_data = json.load(update_file)
         update_file.close()
+
+        # we can pause updating any given hosts source.
+        # if the update.json "pause" key is missing, don't pause.
+        if update_data.get('pause', False):
+            continue
+
         update_url = update_data["url"]
         update_transforms = []
         if update_data.get("transforms"):
@@ -769,23 +795,32 @@ def update_all_sources(source_data_filename, host_filename):
 
 
 # File Logic
-def create_initial_file():
+def create_initial_file(**initial_file_params):
     """
     Initialize the file in which we merge all host files for later pruning.
+
+    Parameters
+    ----------
+    header_params : kwargs
+        Dictionary providing additional parameters for populating the initial file
+        information. Currently, those fields are:
+
+        1) nounifiedhosts
     """
 
     merge_file = tempfile.NamedTemporaryFile()
 
-    # spin the sources for the base file
-    for source in sort_sources(
-        recursive_glob(settings["datapath"], settings["hostfilename"])
-    ):
+    if not initial_file_params["nounifiedhosts"]:
+        # spin the sources for the base file
+        for source in sort_sources(
+            recursive_glob(settings["datapath"], settings["hostfilename"])
+        ):
 
-        start = "# Start {}\n\n".format(os.path.basename(os.path.dirname(source)))
-        end = "\n# End {}\n\n".format(os.path.basename(os.path.dirname(source)))
+            start = "# Start {}\n\n".format(os.path.basename(os.path.dirname(source)))
+            end = "\n# End {}\n\n".format(os.path.basename(os.path.dirname(source)))
 
-        with open(source, "r", encoding="UTF-8") as curFile:
-            write_data(merge_file, start + curFile.read() + end)
+            with open(source, "r", encoding="UTF-8") as curFile:
+                write_data(merge_file, start + curFile.read() + end)
 
     # spin the sources for extensions to the base file
     for source in settings["extensions"]:
@@ -1053,16 +1088,17 @@ def normalize_rule(rule, target_ip, keep_domain_comments):
     """
     next try: Keep RAW domain.
     """
-    regex = r"^\s*([\w\.-]+[a-zA-Z])(.*)"
-    result = re.search(regex, rule)
+    # deny any potential IPv6 address here.
+    if ":" not in rule:
+        regex = r"^\s*([\w\.-]+[a-zA-Z])(.*)"
+        result = re.search(regex, rule)
 
-    if result:
-        hostname, suffix = result.group(1, 2)
+        if result:
+            hostname, suffix = result.group(1, 2)
+            # Explicitly lowercase and trim the hostname.
+            hostname = hostname.lower().strip()
 
-        # Explicitly lowercase and trim the hostname.
-        hostname = hostname.lower().strip()
-
-        return normalize_response(hostname, suffix)
+            return normalize_response(hostname, suffix)
 
     """
     finally, if we get here, just belch to screen
@@ -1105,6 +1141,7 @@ def write_opening_header(final_file, **header_params):
         2) numberofrules
         3) outputsubfolder
         4) skipstatichosts
+        5) nounifiedhosts
     """
 
     final_file.seek(0)  # Reset file pointer.
@@ -1112,22 +1149,41 @@ def write_opening_header(final_file, **header_params):
 
     final_file.seek(0)  # Write at the top.
 
+    no_unified_hosts = header_params["nounifiedhosts"]
+
     if header_params["extensions"]:
-        if len(header_params["extensions"]) > 1:
-            write_data(
-                final_file,
-                "# Title: StevenBlack/hosts with the {0} and {1} extensions\n#\n".format(
-                    ", ".join(header_params["extensions"][:-1]),
-                    header_params["extensions"][-1],
-                ),
-            )
+        if no_unified_hosts:
+            if len(header_params["extensions"]) > 1:
+                write_data(
+                    final_file,
+                    "# Title: StevenBlack/hosts extensions {0} and {1} \n#\n".format(
+                        ", ".join(header_params["extensions"][:-1]),
+                        header_params["extensions"][-1],
+                    ),
+                )
+            else:
+                write_data(
+                    final_file,
+                    "# Title: StevenBlack/hosts extension {0}\n#\n".format(
+                        ", ".join(header_params["extensions"])
+                    ),
+                )
         else:
-            write_data(
-                final_file,
-                "# Title: StevenBlack/hosts with the {0} extension\n#\n".format(
-                    ", ".join(header_params["extensions"])
-                ),
-            )
+            if len(header_params["extensions"]) > 1:
+                write_data(
+                    final_file,
+                    "# Title: StevenBlack/hosts with the {0} and {1} extensions\n#\n".format(
+                        ", ".join(header_params["extensions"][:-1]),
+                        header_params["extensions"][-1],
+                    ),
+                )
+            else:
+                write_data(
+                    final_file,
+                    "# Title: StevenBlack/hosts with the {0} extension\n#\n".format(
+                        ", ".join(header_params["extensions"])
+                    ),
+                )
     else:
         write_data(final_file, "# Title: StevenBlack/hosts\n#\n")
 
@@ -1143,12 +1199,21 @@ def write_opening_header(final_file, **header_params):
     )
 
     if header_params["extensions"]:
-        write_data(
-            final_file,
-            "# Extensions added to this file: "
-            + ", ".join(header_params["extensions"])
-            + "\n",
-        )
+        if header_params["nounifiedhosts"]:
+            write_data(
+                final_file,
+                "# The unified hosts file was not used while generating this file.\n"
+                "# Extensions used to generate this file: "
+                + ", ".join(header_params["extensions"])
+                + "\n",
+            )
+        else:
+            write_data(
+                final_file,
+                "# Extensions added to this file: "
+                + ", ".join(header_params["extensions"])
+                + "\n",
+            )
 
     write_data(
         final_file,
@@ -1226,17 +1291,22 @@ def update_readme_data(readme_file, **readme_updates):
         2) sourcesdata
         3) numberofrules
         4) outputsubfolder
+        5) nounifiedhosts
     """
 
     extensions_key = "base"
     extensions = readme_updates["extensions"]
+    no_unified_hosts = readme_updates["nounifiedhosts"]
 
     if extensions:
         extensions_key = "-".join(extensions)
+        if no_unified_hosts:
+            extensions_key = extensions_key + "-only"
 
     output_folder = readme_updates["outputsubfolder"]
     generation_data = {
         "location": path_join_robust(output_folder, ""),
+        "no_unified_hosts": no_unified_hosts,
         "entries": readme_updates["numberofrules"],
         "sourcesdata": readme_updates["sourcesdata"],
     }
@@ -1273,17 +1343,41 @@ def move_hosts_file_into_place(final_file):
 
     filename = os.path.abspath(final_file.name)
 
-    if os.name == "posix":
+    try:
+        if not Path(filename).exists():
+            raise FileNotFoundError
+    except Exception:
+        print_failure(f"{filename} does not exist.")
+        return False
+
+    if platform.system() == "Windows":
+        target_file = str(Path(os.getenv("SystemRoot")) / "system32" / "drivers" / "etc" / "hosts")
+    else:
+        target_file = "/etc/hosts"
+
+    if os.getenv("IN_CONTAINER"):
+        # It's not allowed to remove/replace a mounted /etc/hosts, so we replace the content.
+        # This requires running the container user as root, as is the default.
+        print(f"Running in container, so we will replace the content of {target_file}.")
+        try:
+            with open(target_file, "w") as target_stream:
+                with open(filename, "r") as source_stream:
+                    source = source_stream.read()
+                    target_stream.write(source)
+            return True
+        except Exception:
+            print_failure(f"Replacing content of {target_file} failed.")
+            return False
+    elif platform.system() == "Linux" or platform.system() == "Windows" or platform.system() == "Darwin":
         print(
-            "Moving the file requires administrative privileges. You might need to enter your password."
+            f"Replacing {target_file} requires root privileges. You might need to enter your password."
         )
-        if subprocess.call(SUDO + ["cp", filename, "/etc/hosts"]):
-            print_failure("Moving the file failed.")
-    elif os.name == "nt":
-        print("Automatically moving the hosts file in place is not yet supported.")
-        print(
-            "Please move the generated file to %SystemRoot%\\system32\\drivers\\etc\\hosts"
-        )
+        try:
+            subprocess.run(SUDO + ["cp", filename, target_file], check=True)
+            return True
+        except subprocess.CalledProcessError:
+            print_failure(f"Replacing {target_file} failed.")
+            return False
 
 
 def flush_dns_cache():
@@ -1377,7 +1471,7 @@ def flush_dns_cache():
             print_failure("Unable to determine DNS management tool.")
 
 
-def remove_old_hosts_file(old_file_path, backup):
+def remove_old_hosts_file(path_to_file, file_name, backup):
     """
     Remove the old hosts file.
 
@@ -1390,21 +1484,25 @@ def remove_old_hosts_file(old_file_path, backup):
         Whether or not to backup the existing hosts file.
     """
 
-    # Create if already removed, so remove won't raise an error.
-    open(old_file_path, "a").close()
+    full_file_path = path_join_robust(path_to_file, file_name)
 
-    if backup:
-        backup_file_path = old_file_path + "-{}".format(
-            time.strftime("%Y-%m-%d-%H-%M-%S")
-        )
+    if os.path.exists(full_file_path):
+        if backup:
+            backup_file_path = full_file_path + "-{}".format(
+                time.strftime("%Y-%m-%d-%H-%M-%S")
+            )
 
-        # Make a backup copy, marking the date in which the list was updated
-        shutil.copy(old_file_path, backup_file_path)
+            # Make a backup copy, marking the date in which the list was updated
+            shutil.copy(full_file_path, backup_file_path)
 
-    os.remove(old_file_path)
+        os.remove(full_file_path)
+
+    # Create directory if not exists
+    if not os.path.exists(path_to_file):
+        os.makedirs(path_to_file)
 
     # Create new empty hosts file
-    open(old_file_path, "a").close()
+    open(full_file_path, "a").close()
 
 
 # End File Logic

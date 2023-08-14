@@ -113,6 +113,7 @@ class TestGetDefaults(Base):
                 "keepdomaincomments": True,
                 "extensionspath": "foo" + self.sep + "extensions",
                 "extensions": [],
+                "nounifiedhosts": False,
                 "compress": False,
                 "minimise": False,
                 "outputsubfolder": "",
@@ -444,7 +445,7 @@ class TestPromptForMove(Base):
             move_file = self.prompt_for_move(
                 replace=True, auto=auto, skipstatichosts=False
             )
-            self.assertTrue(move_file)
+            self.assertFalse(move_file)
 
             mock_query.assert_not_called()
             self.assert_called_once(mock_move)
@@ -484,7 +485,7 @@ class TestPromptForMove(Base):
         move_file = self.prompt_for_move(
             replace=False, auto=False, skipstatichosts=False
         )
-        self.assertTrue(move_file)
+        self.assertFalse(move_file)
 
         self.assert_called_once(mock_query)
         self.assert_called_once(mock_move)
@@ -679,6 +680,7 @@ class TestUpdateSourcesData(Base):
             datapath=self.data_path,
             extensionspath=self.extensions_path,
             sourcedatafilename=self.source_data_filename,
+            nounifiedhosts=False,
         )
 
     def update_sources_data(self, sources_data, extensions):
@@ -840,6 +842,7 @@ class TestNormalizeRule(BaseStdout):
             "128.0.0.1",
             "0.0.0 google",
             "0.1.2.3.4 foo/bar",
+            "0.0.0.0 https"
         ]:
             self.assertEqual(normalize_rule(rule, **kwargs), (None, None))
 
@@ -990,7 +993,7 @@ class TestWriteOpeningHeader(BaseMockDir):
 
     def test_missing_keyword(self):
         kwargs = dict(
-            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=False
+            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=False, nounifiedhosts=False
         )
 
         for k in kwargs.keys():
@@ -1003,7 +1006,7 @@ class TestWriteOpeningHeader(BaseMockDir):
 
     def test_basic(self):
         kwargs = dict(
-            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=True
+            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=True, nounifiedhosts=False
         )
         write_opening_header(self.final_file, **kwargs)
 
@@ -1032,7 +1035,7 @@ class TestWriteOpeningHeader(BaseMockDir):
 
     def test_basic_include_static_hosts(self):
         kwargs = dict(
-            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=False
+            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=False, nounifiedhosts=False
         )
         with self.mock_property("platform.system") as obj:
             obj.return_value = "Windows"
@@ -1059,7 +1062,7 @@ class TestWriteOpeningHeader(BaseMockDir):
 
     def test_basic_include_static_hosts_linux(self):
         kwargs = dict(
-            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=False
+            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=False, nounifiedhosts=False
         )
         with self.mock_property("platform.system") as system:
             system.return_value = "Linux"
@@ -1096,6 +1099,7 @@ class TestWriteOpeningHeader(BaseMockDir):
             outputsubfolder="",
             numberofrules=5,
             skipstatichosts=True,
+            nounifiedhosts=False,
         )
         write_opening_header(self.final_file, **kwargs)
 
@@ -1123,6 +1127,41 @@ class TestWriteOpeningHeader(BaseMockDir):
         ):
             self.assertNotIn(expected, contents)
 
+    def test_no_unified_hosts(self):
+        kwargs = dict(
+            extensions=["epsilon", "gamma"],
+            outputsubfolder="",
+            numberofrules=5,
+            skipstatichosts=True,
+            nounifiedhosts=True,
+        )
+        write_opening_header(self.final_file, **kwargs)
+
+        contents = self.final_file.getvalue()
+        contents = contents.decode("UTF-8")
+
+        # Expected contents.
+        for expected in (
+            ", ".join(kwargs["extensions"]),
+            "# The unified hosts file was not used while generating this file.",
+            "# Extensions used to generate this file:",
+            "# This hosts file is a merged collection",
+            "# with a dash of crowd sourcing via GitHub",
+            "# Number of unique domains: {count}".format(count=kwargs["numberofrules"]),
+            "Fetch the latest version of this file:",
+            "Project home page: https://github.com/StevenBlack/hosts",
+        ):
+            self.assertIn(expected, contents)
+
+        # Expected non-contents.
+        for expected in (
+            "127.0.0.1 localhost",
+            "127.0.0.1 local",
+            "127.0.0.53",
+            "127.0.1.1",
+        ):
+            self.assertNotIn(expected, contents)
+
     def _check_preamble(self, check_copy):
         hosts_file = os.path.join(self.test_dir, "myhosts")
         hosts_file += ".example" if check_copy else ""
@@ -1131,7 +1170,7 @@ class TestWriteOpeningHeader(BaseMockDir):
             f.write("peter-piper-picked-a-pepper")
 
         kwargs = dict(
-            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=True
+            extensions="", outputsubfolder="", numberofrules=5, skipstatichosts=True, nounifiedhosts=False
         )
 
         with self.mock_property("updateHostsFile.BASEDIR_PATH"):
@@ -1180,7 +1219,7 @@ class TestUpdateReadmeData(BaseMockDir):
 
     def test_missing_keyword(self):
         kwargs = dict(
-            extensions="", outputsubfolder="", numberofrules="", sourcesdata=""
+            extensions="", outputsubfolder="", numberofrules="", sourcesdata="", nounifiedhosts=False
         )
 
         for k in kwargs.keys():
@@ -1196,7 +1235,7 @@ class TestUpdateReadmeData(BaseMockDir):
             json.dump({"foo": "bar"}, f)
 
         kwargs = dict(
-            extensions=None, outputsubfolder="foo", numberofrules=5, sourcesdata="hosts"
+            extensions=None, outputsubfolder="foo", numberofrules=5, sourcesdata="hosts", nounifiedhosts=False
         )
         update_readme_data(self.readme_file, **kwargs)
 
@@ -1206,7 +1245,7 @@ class TestUpdateReadmeData(BaseMockDir):
             sep = self.sep
 
         expected = {
-            "base": {"location": "foo" + sep, "sourcesdata": "hosts", "entries": 5},
+            "base": {"location": "foo" + sep, 'no_unified_hosts': False, "sourcesdata": "hosts", "entries": 5},
             "foo": "bar",
         }
 
@@ -1219,7 +1258,7 @@ class TestUpdateReadmeData(BaseMockDir):
             json.dump({"base": "soprano"}, f)
 
         kwargs = dict(
-            extensions=None, outputsubfolder="foo", numberofrules=5, sourcesdata="hosts"
+            extensions=None, outputsubfolder="foo", numberofrules=5, sourcesdata="hosts", nounifiedhosts=False
         )
         update_readme_data(self.readme_file, **kwargs)
 
@@ -1229,7 +1268,7 @@ class TestUpdateReadmeData(BaseMockDir):
             sep = self.sep
 
         expected = {
-            "base": {"location": "foo" + sep, "sourcesdata": "hosts", "entries": 5}
+            "base": {"location": "foo" + sep, 'no_unified_hosts': False, "sourcesdata": "hosts", "entries": 5},
         }
 
         with open(self.readme_file, "r") as f:
@@ -1245,6 +1284,7 @@ class TestUpdateReadmeData(BaseMockDir):
             outputsubfolder="foo",
             numberofrules=5,
             sourcesdata="hosts",
+            nounifiedhosts=False,
         )
         update_readme_data(self.readme_file, **kwargs)
 
@@ -1254,7 +1294,33 @@ class TestUpdateReadmeData(BaseMockDir):
             sep = self.sep
 
         expected = {
-            "com-org": {"location": "foo" + sep, "sourcesdata": "hosts", "entries": 5}
+            "com-org": {"location": "foo" + sep, 'no_unified_hosts': False, "sourcesdata": "hosts", "entries": 5}
+        }
+
+        with open(self.readme_file, "r") as f:
+            actual = json.load(f)
+            self.assertEqual(actual, expected)
+
+    def test_set_no_unified_hosts(self):
+        with open(self.readme_file, "w") as f:
+            json.dump({}, f)
+
+        kwargs = dict(
+            extensions=["com", "org"],
+            outputsubfolder="foo",
+            numberofrules=5,
+            sourcesdata="hosts",
+            nounifiedhosts=True,
+        )
+        update_readme_data(self.readme_file, **kwargs)
+
+        if platform.system().lower() == "windows":
+            sep = "/"
+        else:
+            sep = self.sep
+
+        expected = {
+            "com-org-only": {"location": "foo" + sep, 'no_unified_hosts': True, "sourcesdata": "hosts", "entries": 5}
         }
 
         with open(self.readme_file, "r") as f:
@@ -1264,61 +1330,53 @@ class TestUpdateReadmeData(BaseMockDir):
 
 class TestMoveHostsFile(BaseStdout):
     @mock.patch("os.path.abspath", side_effect=lambda f: f)
-    def test_move_hosts_no_name(self, _):
-        with self.mock_property("os.name"):
-            os.name = "foo"
+    def test_move_hosts_no_name(self, _):  # TODO: Create test which tries to move actual file
+        with self.mock_property("platform.system") as obj:
+            obj.return_value = "foo"
+
+            mock_file = mock.Mock(name="foo")
+            move_hosts_file_into_place(mock_file)
+
+            expected = "does not exist"
+            output = sys.stdout.getvalue()
+
+            self.assertIn(expected, output)
+
+    @mock.patch("os.path.abspath", side_effect=lambda f: f)
+    def test_move_hosts_windows(self, _):
+        with self.mock_property("platform.system") as obj:
+            obj.return_value = "Windows"
 
             mock_file = mock.Mock(name="foo")
             move_hosts_file_into_place(mock_file)
 
             expected = ""
             output = sys.stdout.getvalue()
-
-            self.assertEqual(output, expected)
-
-    @mock.patch("os.path.abspath", side_effect=lambda f: f)
-    def test_move_hosts_windows(self, _):
-        with self.mock_property("os.name"):
-            os.name = "nt"
-
-            mock_file = mock.Mock(name="foo")
-            move_hosts_file_into_place(mock_file)
-
-            expected = (
-                "Automatically moving the hosts "
-                "file in place is not yet supported.\n"
-                "Please move the generated file to "
-                r"%SystemRoot%\system32\drivers\etc\hosts"
-            )
-            output = sys.stdout.getvalue()
             self.assertIn(expected, output)
 
     @mock.patch("os.path.abspath", side_effect=lambda f: f)
     @mock.patch("subprocess.call", return_value=0)
-    def test_move_hosts_posix(self, *_):
-        with self.mock_property("os.name"):
-            os.name = "posix"
+    def test_move_hosts_posix(self, *_):  # TODO: create test which tries to move an actual file
+        with self.mock_property("platform.system") as obj:
+            obj.return_value = "Linux"
 
             mock_file = mock.Mock(name="foo")
             move_hosts_file_into_place(mock_file)
 
-            expected = (
-                "Moving the file requires administrative "
-                "privileges. You might need to enter your password."
-            )
+            expected = "does not exist."
             output = sys.stdout.getvalue()
             self.assertIn(expected, output)
 
     @mock.patch("os.path.abspath", side_effect=lambda f: f)
     @mock.patch("subprocess.call", return_value=1)
     def test_move_hosts_posix_fail(self, *_):
-        with self.mock_property("os.name"):
-            os.name = "posix"
+        with self.mock_property("platform.system") as obj:
+            obj.return_value = "Linux"
 
             mock_file = mock.Mock(name="foo")
             move_hosts_file_into_place(mock_file)
 
-            expected = "Moving the file failed."
+            expected = "does not exist."
             output = sys.stdout.getvalue()
             self.assertIn(expected, output)
 
@@ -1432,52 +1490,53 @@ class TestFlushDnsCache(BaseStdout):
 class TestRemoveOldHostsFile(BaseMockDir):
     def setUp(self):
         super(TestRemoveOldHostsFile, self).setUp()
-        self.hosts_file = os.path.join(self.test_dir, "hosts")
+        self.hosts_file = "hosts"
+        self.full_hosts_path = os.path.join(self.test_dir, "hosts")
 
     def test_remove_hosts_file(self):
         old_dir_count = self.dir_count
 
-        remove_old_hosts_file(self.hosts_file, backup=False)
+        remove_old_hosts_file(self.test_dir, self.hosts_file, backup=False)
 
         new_dir_count = old_dir_count + 1
         self.assertEqual(self.dir_count, new_dir_count)
 
-        with open(self.hosts_file, "r") as f:
+        with open(self.full_hosts_path, "r") as f:
             contents = f.read()
             self.assertEqual(contents, "")
 
     def test_remove_hosts_file_exists(self):
-        with open(self.hosts_file, "w") as f:
+        with open(self.full_hosts_path, "w") as f:
             f.write("foo")
 
         old_dir_count = self.dir_count
 
-        remove_old_hosts_file(self.hosts_file, backup=False)
+        remove_old_hosts_file(self.test_dir, self.hosts_file, backup=False)
 
         new_dir_count = old_dir_count
         self.assertEqual(self.dir_count, new_dir_count)
 
-        with open(self.hosts_file, "r") as f:
+        with open(self.full_hosts_path, "r") as f:
             contents = f.read()
             self.assertEqual(contents, "")
 
     @mock.patch("time.strftime", return_value="new")
     def test_remove_hosts_file_backup(self, _):
-        with open(self.hosts_file, "w") as f:
+        with open(self.full_hosts_path, "w") as f:
             f.write("foo")
 
         old_dir_count = self.dir_count
 
-        remove_old_hosts_file(self.hosts_file, backup=True)
+        remove_old_hosts_file(self.test_dir, self.hosts_file, backup=True)
 
         new_dir_count = old_dir_count + 1
         self.assertEqual(self.dir_count, new_dir_count)
 
-        with open(self.hosts_file, "r") as f:
+        with open(self.full_hosts_path, "r") as f:
             contents = f.read()
             self.assertEqual(contents, "")
 
-        new_hosts_file = self.hosts_file + "-new"
+        new_hosts_file = self.full_hosts_path + "-new"
 
         with open(new_hosts_file, "r") as f:
             contents = f.read()
