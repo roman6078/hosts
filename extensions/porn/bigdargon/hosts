@@ -1,7 +1,7 @@
 # Title: hostsVN Adult
-# Last modified: 13 Aug 2023 13:59 UTC+7
-# Version: 2308131359
-# Blocked: 3,380 domains
+# Last modified: 21 Dec 2023 15:52 UTC+7
+# Version: 2312211552
+# Blocked: 3,387 domains
 # Only include adult domains (Vietnamese language)
 # Homepage: https://bigdargon.github.io/hostsVN/
 # GitHub: https://github.com/bigdargon/hostsVN
@@ -22,6 +22,7 @@
 0.0.0.0 12hdem.com
 0.0.0.0 1phimsex.vip
 0.0.0.0 1pondohd.com
+0.0.0.0 2089.vntopg88.live
 0.0.0.0 210vn.net
 0.0.0.0 247live.mobi
 0.0.0.0 24hchudu.com
@@ -946,6 +947,7 @@
 0.0.0.0 kieunuvadaigia.xyz
 0.0.0.0 kieunuviet.xyz
 0.0.0.0 kphimsex.xyz
+0.0.0.0 ktv.bio
 0.0.0.0 kute3x.net
 0.0.0.0 kynu.live
 0.0.0.0 kynudanang.link
@@ -2591,6 +2593,7 @@
 0.0.0.0 topapp.vin
 0.0.0.0 topapplive.com
 0.0.0.0 topbot.pro
+0.0.0.0 topg88.live
 0.0.0.0 topgaigoi.us
 0.0.0.0 topgaixinh.com
 0.0.0.0 topgaixinh.net
@@ -2841,6 +2844,7 @@
 0.0.0.0 vlxx.ac
 0.0.0.0 vlxx.ai
 0.0.0.0 vlxx.bet
+0.0.0.0 vlxx.bio
 0.0.0.0 vlxx.buzz
 0.0.0.0 vlxx.cc
 0.0.0.0 vlxx.chat
@@ -2857,6 +2861,7 @@
 0.0.0.0 vlxx.icu
 0.0.0.0 vlxx.info
 0.0.0.0 vlxx.io
+0.0.0.0 vlxx.kim
 0.0.0.0 vlxx.live
 0.0.0.0 vlxx.me
 0.0.0.0 vlxx.media
@@ -2945,6 +2950,8 @@
 0.0.0.0 vnok.net
 0.0.0.0 vnphimsex.info
 0.0.0.0 vnshow.cc
+0.0.0.0 vntopg88.live
+0.0.0.0 vntopg88.vip
 0.0.0.0 vnxnxx.cc
 0.0.0.0 vnxnxx.pro
 0.0.0.0 vnxnxx.xyz
