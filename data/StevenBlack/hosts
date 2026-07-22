@@ -1303,7 +1303,6 @@
 0.0.0.0 ads.samsungads.com
 0.0.0.0 config.samsungads.com
 0.0.0.0 events.samsungads.com
-0.0.0.0 oempprd.samsungcloudsolution.com
 0.0.0.0 vdterms.samsungcloudsolution.com
 0.0.0.0 oempprd.samsungcloudsolution.net
 0.0.0.0 invitation.samsungiotcloud.com
@@ -3057,3 +3056,206 @@
 
 # Added August 14, 2025
 0.0.0.0 analytics.arz.at
+
+# added September 14, 2025
+0.0.0.0 eventcra.com
+
+# added September 15, 2025
+0.0.0.0 safalindustries.com
+
+# added September 22, 2025
+0.0.0.0 cryptocurrency.market
+
+# added October 2, 2025
+0.0.0.0 log.cookieyes.com
+0.0.0.0 directory.cookieyes.com
+
+# Added October 12, 2025
+0.0.0.0 xpoalswwkjddsljsy.com
+0.0.0.0 xoiiasdpsdoasdpojas.com
+
+# Added November 7, 2025
+0.0.0.0 d2.ads.rmbl.ws
+0.0.0.0 a.ads.rmbl.ws
+
+# Added November 11, 2025
+0.0.0.0 st5fdbvs.r.us-east-1.awstrack.me
+0.0.0.0 fullgamingacc.com
+
+# Added November 15, 2025
+0.0.0.0 enstat.xbext.com
+0.0.0.0 enappstat.xbext.com
+
+# Added November 24, 2025
+0.0.0.0 zpr.io
+
+# Added November 29, 2025
+0.0.0.0 tillequal.com
+0.0.0.0 html-load.cc
+
+# Added December 4, 2025
+0.0.0.0 colombia.ru.com
+0.0.0.0 fasss62r9nowzzz.z13.web.core.windows.net
+0.0.0.0 etonynew345zzz.z13.web.core.windows.net
+
+# Added December 11, 2025
+0.0.0.0 foldexmoon.fun
+0.0.0.0 foldexmoon.shop
+0.0.0.0 foldexmoon.today
+0.0.0.0 foldexmoon.top
+0.0.0.0 foldexmoon.world
+0.0.0.0 foldexmoon.xyz
+0.0.0.0 instant-mac.com
+
+# Added December 15, 2025
+0.0.0.0 pixelfy.me
+
+# Added December 26, 2025
+0.0.0.0 logs.ads.vungle.com
+
+# Added January 2, 2026
+0.0.0.0 content-loader.com
+
+# Added January 10, 2026
+0.0.0.0 iwad.cachefly.net
+
+# Added January 19, 2026
+0.0.0.0 intelcom.615344.vip
+0.0.0.0 615344.vip
+
+# Added January 21, 2026
+0.0.0.0 privacy-sandbox.appsflyersdk.com
+0.0.0.0 api16-dual-event-sg2.pangle.io
+0.0.0.0 api16-access-ttp.tiktokpangle.us
+0.0.0.0 api16-access-wf-sg.pangle.io
+0.0.0.0 prod-mediate-events.applovin.com
+0.0.0.0 logs.ads.vungle.com
+
+# Added January 25, 2026
+0.0.0.0 newsentry.simpals.md
+
+# Added February 14, 2026
+0.0.0.0 datarouter.ol.epicgames.com
+0.0.0.0 rkv1.com
+0.0.0.0 msft-ssp.adnxs.com
+
+# Added February 24, 2026
+0.0.0.0 admixer.md
+
+# Added March 22, 2026
+0.0.0.0 proxy.optoutadvertising.com
+0.0.0.0 cdn.optoutadvertising.com
+
+# Added March 25, 2026
+0.0.0.0 cstasa.ca
+0.0.0.0 porewin.net
+
+# Added March 29, 2026
+0.0.0.0 kra18.com
+
+# Added March 31, 2026
+0.0.0.0 sfrclak.com
+0.0.0.0 callnrwise.com
+
+# Added April 4, 2026
+0.0.0.0 ca-pagei.bond
+0.0.0.0 ontario.ca-pagei.bond
+
+# Added May 3, 2026
+0.0.0.0 stats-collector.cxense.com
+
+# Added May 15, 2026
+0.0.0.0 pustwin.com
+0.0.0.0 nustwin.com
+0.0.0.0 vyroget152.to
+0.0.0.0 deezwin.com
+0.0.0.0 bazowin781.pro
+
+# Added May 26, 2026
+0.0.0.0 flipboxstudio.info
+
+# Added June 2, 2026
+0.0.0.0 ksewqpiyv.com.es
+
+# Added June 11, 2026
+0.0.0.0 proxyjs.brdtnet.com
+0.0.0.0 proxyjs.luminatinet.com
+0.0.0.0 proxyjs.bright-sdk.com
+0.0.0.0 clientsdk.bright-sdk.com
+0.0.0.0 clientsdk.brdtnet.com
+
+# Added June 21, 2026
+0.0.0.0 ecoprintworks.vercel.app
+0.0.0.0 karedeutschland.com
+
+# Added June 26, 2026
+0.0.0.0 app.ledger-lives-desktop.io
+0.0.0.0 ledger-lives-desktop.io
+0.0.0.0 apcoa-park.com
+
+# Added June 30, 2026
+0.0.0.0 block-apple.com
+
+# Added July 5, 2026
+0.0.0.0 0.athwartwhoafat.com
+0.0.0.0 1.athwartwhoafat.com
+0.0.0.0 2.athwartwhoafat.com
+0.0.0.0 3.athwartwhoafat.com
+0.0.0.0 4.athwartwhoafat.com
+0.0.0.0 5.athwartwhoafat.com
+0.0.0.0 6.athwartwhoafat.com
+0.0.0.0 7.athwartwhoafat.com
+0.0.0.0 8.athwartwhoafat.com
+0.0.0.0 9.athwartwhoafat.com
+0.0.0.0 athwartwhoafat.com
+
+# Added July 8, 2026
+0.0.0.0 ledg.erlive.at
+0.0.0.0 ledger.com.ledgerlive.com.es
+
+# Added July 9, 2026
+0.0.0.0 0.blissfullyzebra.com
+0.0.0.0 1.blissfullyzebra.com
+0.0.0.0 2.blissfullyzebra.com
+0.0.0.0 3.blissfullyzebra.com
+0.0.0.0 4.blissfullyzebra.com
+0.0.0.0 5.blissfullyzebra.com
+0.0.0.0 6.blissfullyzebra.com
+0.0.0.0 7.blissfullyzebra.com
+0.0.0.0 8.blissfullyzebra.com
+0.0.0.0 9.blissfullyzebra.com
+0.0.0.0 blissfullyzebra.com
+0.0.0.0 0.ackzany.com
+0.0.0.0 1.ackzany.com
+0.0.0.0 2.ackzany.com
+0.0.0.0 3.ackzany.com
+0.0.0.0 4.ackzany.com
+0.0.0.0 5.ackzany.com
+0.0.0.0 6.ackzany.com
+0.0.0.0 7.ackzany.com
+0.0.0.0 8.ackzany.com
+0.0.0.0 9.ackzany.com
+0.0.0.0 ackzany.com
+0.0.0.0 0.duhquietly.com
+0.0.0.0 1.duhquietly.com
+0.0.0.0 2.duhquietly.com
+0.0.0.0 3.duhquietly.com
+0.0.0.0 4.duhquietly.com
+0.0.0.0 5.duhquietly.com
+0.0.0.0 6.duhquietly.com
+0.0.0.0 7.duhquietly.com
+0.0.0.0 8.duhquietly.com
+0.0.0.0 9.duhquietly.com
+0.0.0.0 duhquietly.com
+0.0.0.0 0.gadzooksrudely.com
+0.0.0.0 1.gadzooksrudely.com
+0.0.0.0 2.gadzooksrudely.com
+0.0.0.0 3.gadzooksrudely.com
+0.0.0.0 4.gadzooksrudely.com
+0.0.0.0 5.gadzooksrudely.com
+0.0.0.0 6.gadzooksrudely.com
+0.0.0.0 7.gadzooksrudely.com
+0.0.0.0 8.gadzooksrudely.com
+0.0.0.0 9.gadzooksrudely.com
+0.0.0.0 gadzooksrudely.com
+0.0.0.0 legder.com-softwares.com

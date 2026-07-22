@@ -1,55 +1,74 @@
 {
   description = "Unified hosts file with base extensions.";
-  outputs = { self, nixpkgs, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      ...
+    }:
     let
       forAllSystems = nixpkgs.lib.genAttrs nixpkgs.lib.platforms.unix;
-
-      nixpkgsFor = forAllSystems (system: import nixpkgs {
-        inherit system;
-      });
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
     in
     {
-      nixosModule = { config, ... }:
-        with nixpkgs.lib;
+      nixosModule =
+        { config, ... }:
         let
+          inherit (nixpkgs) lib;
           cfg = config.networking.stevenBlackHosts;
-          alternatesList = (if cfg.blockFakenews then [ "fakenews" ] else []) ++
-                           (if cfg.blockGambling then [ "gambling" ] else []) ++
-                           (if cfg.blockPorn then [ "porn" ] else []) ++
-                           (if cfg.blockSocial then [ "social" ] else []);
+          alternatesList =
+            (lib.optional cfg.blockFakenews "fakenews")
+            ++ (lib.optional cfg.blockGambling "gambling")
+            ++ (lib.optional cfg.blockPorn "porn")
+            ++ (lib.optional cfg.blockSocial "social");
           alternatesPath = "alternates/" + builtins.concatStringsSep "-" alternatesList + "/";
         in
         {
           options.networking.stevenBlackHosts = {
-            enable = mkEnableOption "Steven Black's hosts file";
-            enableIPv6 = mkEnableOption "IPv6 rules" // {
+            enable = lib.mkEnableOption "Steven Black's hosts file";
+            enableIPv6 = lib.mkEnableOption "IPv6 rules" // {
               default = config.networking.enableIPv6;
-              defaultText = literalExpression "config.networking.enableIPv6";
+              defaultText = lib.literalExpression "config.networking.enableIPv6";
             };
-            blockFakenews = mkEnableOption "fakenews hosts entries";
-            blockGambling = mkEnableOption "gambling hosts entries";
-            blockPorn = mkEnableOption "porn hosts entries";
-            blockSocial = mkEnableOption "social hosts entries";
+            blockFakenews = lib.mkEnableOption "fakenews hosts entries";
+            blockGambling = lib.mkEnableOption "gambling hosts entries";
+            blockPorn = lib.mkEnableOption "porn hosts entries";
+            blockSocial = lib.mkEnableOption "social hosts entries";
           };
-          config = mkIf cfg.enable {
+          config = lib.mkIf cfg.enable {
             networking.extraHosts =
               let
-                orig = builtins.readFile ("${self}/" + (if alternatesList != [] then alternatesPath else "") + "hosts");
+                orig = builtins.readFile (
+                  "${self}/" + (lib.optionalString (alternatesList != [ ]) alternatesPath) + "hosts"
+                );
                 ipv6 = builtins.replaceStrings [ "0.0.0.0" ] [ "::" ] orig;
-              in orig + (optionalString cfg.enableIPv6 ("\n" + ipv6));
+              in
+              lib.mkAfter (orig + (lib.optionalString cfg.enableIPv6 ("\n" + ipv6)));
           };
         };
 
-      devShells = forAllSystems (system:
-        let pkgs = nixpkgsFor.${system}; in
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
         {
           default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              python3
-              python3Packages.flake8
-              python3Packages.requests
+            packages = with pkgs; [
+              nixfmt
+              (python3.withPackages (
+                pythonPackages: with pythonPackages; [
+                  flake8
+                  requests
+                ]
+              ))
             ];
           };
-        });
+        }
+      );
+
+      packages = forAllSystems (system: {
+        unbound = nixpkgsFor.${system}.callPackage ./unbound.nix { };
+      });
     };
 }

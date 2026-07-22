@@ -1,6 +1,11 @@
-**Take Note!**
+> [!IMPORTANT]
+> **Cloning this repository can take a long time!**
+> You probably just want to start with the latest version, not its whole history since 2018.
+> **Therefore** you probably want to use `git clone --depth 1 ...` to save significant time.
 
-With the exception of issues and PRs regarding changes to
+
+> [!NOTE]
+> With the exception of issues and PRs regarding changes to
 `hosts/data/StevenBlack/hosts`, all other issues regarding the content of the
 produced hosts files should be made with the appropriate data source that
 contributed the content in question. The contact information for all of the data
@@ -124,6 +129,12 @@ Build the Docker container from the root of this repo like this:
 
 ```sh
 docker build --no-cache . -t stevenblack-hosts
+```
+
+Or without cloning (directly from GitHub):
+
+```sh
+docker build --no-cache https://github.com/StevenBlack/hosts.git -t stevenblack-hosts
 ```
 
 Then run your command as such:
@@ -381,8 +392,10 @@ To install hosts file on your machine add the following into your
 
 ### Nix Flake
 
-NixOS installations which are managed through _flakes_ can use the hosts file
-like this:
+NixOS installations which are managed through _flakes_ can directly use the `flake.nix` in this repository as an input.
+
+It contains a `nixosModule` that can be used to install the `hosts` file locally, as well as a package containing config files for the [Unbound](https://github.com/NLnetLabs/unbound) DNS server to be used as blocklists.
+
 
 ```nix
 {
@@ -398,30 +411,37 @@ like this:
     nixosConfigurations.my-hostname = {
       system = "<architecture>";
       modules = [
-        hosts.nixosModule {
-          networking.stevenBlackHosts.enable = true;
+        # nixosModule to install hosts file locally:
+        hosts.nixosModule
+        {
+          networking.stevenBlackHosts = {
+            enable = true;
+            # optionally:
+            # enableIPv6 = true;
+            # blockFakenews = true;
+            # blockGambling = true;
+            # blockPorn = true;
+            # blockSocial = true;
+          };
+        }
+
+        # configure unbound to use config as blocklist:
+        {
+          {
+            services.unbound = {
+              enable = true;
+              settings.server.include = [
+                "${hosts.packages.${system}.unbound}/hosts"
+                # alternates are also available, e.g. /fakenews, /fakenews-gambling etc.
+              ];
+            };
+          }
         }
       ];
     };
   };
 }
 ```
-
-The hosts extensions are also available with the following options:
-
-```nix
-{
-  networking.stevenBlackHosts = {
-    enableIPv6 = true;
-    blockFakenews = true;
-    blockGambling = true;
-    blockPorn = true;
-    blockSocial = true;
-  };
-}
-```
-
-IPv6 rules are enabled by default when `networking.enableIPv6` is set to `true`.
 
 ## Updating hosts file on Windows
 
@@ -594,6 +614,7 @@ devices under a variety of operating systems.
   most welcome.
 - [ViHoMa](https://github.com/cmabad/ViHoMa) is a Visual Hosts file Manager,
   written in Java, by Christian Martínez. Check it out!
+- [SaneHosts](https://sanehosts.com "SaneHosts") (for macOS): A native hosts file manager with profile-based blocking, Touch ID protection, and support for 200+ curated blocklists. Open source.
 
 ## Interesting Applications
 

@@ -2025,9 +2025,6 @@
 127.0.0.1 appleads-trk.com
 127.0.0.1 redirect.appleads-trk.com
 
-# [applicaster.com]
-127.0.0.1 assets-secure.applicaster.com
-
 # [applifier.com]
 127.0.0.1 impact.applifier.com
 
@@ -3281,9 +3278,6 @@
 127.0.0.1 api.cloudmobi.net
 127.0.0.1 logger.cloudmobi.net
 
-# [cludo.com]
-127.0.0.1 customer.cludo.com
-
 # [cluep.com]
 127.0.0.1 cas.cluep.com
 127.0.0.1 dev-as.cluep.com
@@ -3473,9 +3467,6 @@
 # [cordial.com]
 127.0.0.1 events-stream-svc.usw2.cordial.com
 127.0.0.1 message-hub-svc.usw2.cordial.com
-
-# [coremedia.cloud]
-127.0.0.1 sitegenesis.production.deckers.coremedia.cloud
 
 # [coremetrics.com]
 127.0.0.1 coremetrics.com
